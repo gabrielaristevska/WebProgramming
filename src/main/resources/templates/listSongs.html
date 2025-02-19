@@ -1,0 +1,77 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Songs Homepage - Welcome to My Music Store</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+        }
+        div{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to My Music Store</h1>
+    <br>
+</header>
+<main>
+
+    <h2>Add a new song:</h2>
+    <th:block sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/songs/add}">
+        <button type="button">Add new song</button>
+    </a>
+    </th:block>
+
+    <h2>Choose a song:</h2>
+
+    <div class="container">
+        <form th:method="POST" th:action="@{/artists}">
+            <div th:each="song : ${songs}" class="left-div">
+                <div>
+                    <input type="radio" name="songRadio" th:id="${song.getTrackId()}" th:value="${song.getTrackId()}" required>
+                    <label th:for="${song.getId()}"
+                           th:text="'Title: ' + ${song.getTitle()} + ', Genre: ' + ${song.getGenre()} + ', Release Year: ' + ${song.getReleaseYear()} + ', Album: ' + ${song.getAlbum().name}"></label>
+                    <th:block sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/songs/delete/{id}(id=${song.getId()})}">
+                        <button type="button">Delete</button>
+                    </a>
+
+                    <br>
+
+                    <a th:href="@{/songs/edit-form/{id}(id=${song.getId()})}">
+                        <button type="button">Edit</button>
+                    </a>
+                    </th:block>
+                </div>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <form th:method="GET" th:action="@{/songs}">
+        <br>
+        <br>
+        <h2>Search Songs by Albums:</h2>
+
+        <select name="albumId1" id="albumId1">
+            <option th:each="album : ${albums}"
+                    th:value="${album.getId()}"
+                    th:text="${album.getName()}">
+            </option>
+        </select>
+        <input type="submit" value="Search">
+
+        <div th:each="song : ${songs1}">
+            <span th:text="'Title: ' + ${song.title} + ', Genre: ' + ${song.genre} + ', Release Year: ' + ${song.releaseYear}"></span>
+            </br>
+        </div>
+    </form>
+
+</main>
+</body>
+</html>
